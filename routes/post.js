@@ -1,0 +1,20 @@
+const express = require('express')
+const router = express.Router()
+const Post = require('../controller/post')
+const auth = require('../auth/auth')
+const midle = require('../helper/image')
+
+router.get('/',Post.findAll)
+router.post('/',auth.isLogin,midle.multer.single('photoUrl'),midle.sendUploadToGCS,Post.add)
+router.get('/mypost',auth.isLogin,Post.findSelfPost)
+router.get('/user/:id',auth.isLogin,Post.findOtherProfile)
+router.get('/:id',Post.detail)
+router.delete('/:id',auth.isLogin,Post.remove)
+router.put('/:id',auth.isLogin,midle.multer.single('photoUrl'),midle.sendUploadToGCS,Post.update)
+router.put('/comments/:id',auth.isLogin,Post.addComment)
+router.put('/comments/single/:id',auth.isLogin,Post.addCommentSingle)
+router.put('/comments/mypage/:id',auth.isLogin,Post.addCommentOnMyPage)
+router.put('/comments/otherpage/:id',auth.isLogin,Post.addCommentOnMyPage)
+router.put('/like/:id',auth.isLogin,Post.addLike)
+
+module.exports= router
